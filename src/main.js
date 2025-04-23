@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // Create Texture Loader
 const textureLoader = new THREE.TextureLoader();
@@ -21,6 +22,9 @@ const camera = new THREE.PerspectiveCamera(
 );
 // Move camera position back to see
 camera.position.z = 30;
+
+// Initilize controls with Camera and Renderer
+const controls = new OrbitControls( camera, renderer.domElement );
 
 // Update camera aspect ratio and renderer on resize
 window.addEventListener('resize', () => {
