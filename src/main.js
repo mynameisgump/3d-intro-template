@@ -1,24 +1,24 @@
 import * as THREE from 'three';
 
-// Initialize Scene Creation
-const scene = new THREE.Scene();
-const skyboxTexture = new THREE.TextureLoader().load('/public/hdr.webp');
-scene.environment = skyboxTexture;
-
-// Initialize Camera and set position
-let followTarget = null;
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-camera.position.z = 30;
-
 // Initializing the Renderer and setting to correct size
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+// Initialize Scene Creation
+const scene = new THREE.Scene();
+
+// Initialize Camera and set position
+
+const camera = new THREE.PerspectiveCamera(
+  75,
+  // Aspect ratio should be set to window ratio
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+// Move camera position back to see
+camera.position.z = 30;
 
 // Update camera aspect ratio and renderer on resize
 window.addEventListener('resize', () => {
