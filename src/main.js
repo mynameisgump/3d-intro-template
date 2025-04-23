@@ -18,7 +18,7 @@ const camera = new THREE.PerspectiveCamera(
   // Aspect ratio should be set to window ratio
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  5000
 );
 // Move camera position back to see
 camera.position.z = 30;
@@ -47,6 +47,14 @@ const mercMat = new THREE.MeshBasicMaterial({map: mercTex});
 const merc = new THREE.Mesh(mercGeo,mercMat);
 sun.add(merc)
 merc.position.x = 8
+
+// Create large geo skybox
+const starGeo = new THREE.SphereGeometry(4000);
+const starTexture = textureLoader.load('/skybox/stars_skybox.jpg');
+// Use back side of sphere for skybox
+const starMat = new THREE.MeshBasicMaterial({ map: starTexture, side: THREE.BackSide})
+const stars = new THREE.Mesh(starGeo,starMat);
+scene.add(stars)
 
 // Code For the Animation Loop
 function animate() {
