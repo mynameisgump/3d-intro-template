@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 
+// Create Texture Loader
+const textureLoader = new THREE.TextureLoader();
+
 // Initializing the Renderer and setting to correct size
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -28,7 +31,8 @@ window.addEventListener('resize', () => {
 
 // Creating the Sun and adding to the scene
 const sunGeo = new THREE.SphereGeometry(5);
-const sunMat = new THREE.MeshBasicMaterial({color: "Orange"});
+const sunTex = textureLoader.load("/textures/sun_diffuse.jpg")
+const sunMat = new THREE.MeshBasicMaterial({color: "Orange", map: sunTex});
 const sun = new THREE.Mesh(sunGeo,sunMat);
 scene.add(sun)
 
