@@ -36,10 +36,20 @@ const sunMat = new THREE.MeshBasicMaterial({color: "Orange", map: sunTex});
 const sun = new THREE.Mesh(sunGeo,sunMat);
 scene.add(sun)
 
+// Create mercury and add to the sun, offset for rotation 
+const mercGeo = new THREE.SphereGeometry(1);
+const mercTex = textureLoader.load("/textures/mercury_diffuse.jpg");
+const mercMat = new THREE.MeshBasicMaterial({map: mercTex});
+const merc = new THREE.Mesh(mercGeo,mercMat);
+sun.add(merc)
+merc.position.x = 8
+
 // Code For the Animation Loop
 function animate() {
   renderer.render(scene, camera);
   
+  // Planet and sun rotations
   sun.rotation.y += 0.01
+  merc.rotation.y += 0.01
 }
 renderer.setAnimationLoop(animate);
