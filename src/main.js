@@ -9,7 +9,6 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 
 // Initialize Camera and set position
-
 const camera = new THREE.PerspectiveCamera(
   75,
   // Aspect ratio should be set to window ratio
@@ -27,18 +26,16 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Creating a mesh and adding to the scene
-const cubeGeo = new THREE.BoxGeometry(5,5,5)
-const cubeMat = new THREE.MeshBasicMaterial()
-const cube =new THREE.Mesh(cubeGeo,cubeMat);
-scene.add(cube)
+// Creating the Sun and adding to the scene
+const sunGeo = new THREE.SphereGeometry(5);
+const sunMat = new THREE.MeshBasicMaterial({color: "Orange"});
+const sun = new THREE.Mesh(sunGeo,sunMat);
+scene.add(sun)
 
 // Code For the Animation Loop
 function animate() {
   renderer.render(scene, camera);
   
-  cube.rotation.x += 0.02
-  cube.rotation.y += 0.01
-  cube.rotation.z += 0.04
+  sun.rotation.y += 0.01
 }
 renderer.setAnimationLoop(animate);
