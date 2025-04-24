@@ -39,6 +39,7 @@ function createPlanet(size,texture, orbitRadius, parent) {
   const planet = new THREE.Mesh(planetGeo,planetMat);
   orbitCenter.add(planet);
   planet.position.x = orbitRadius;
+  planet.userData = {type: "planet"}
   
   return [orbitCenter,planet]
 }
@@ -61,6 +62,38 @@ const camera = new THREE.PerspectiveCamera(
 );
 // Move camera position back to see
 camera.position.z = 30;
+
+// Initialize a raycaster
+const raycaster = new THREE.Raycaster();
+// Variable for pointer location 
+const pointer = new THREE.Vector2();
+
+// Normalized pointer location 
+function onPointerMove(event) {
+  // calculate pointer position in normalized device coordinates
+  // (-1 to +1) for both components
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+window.addEventListener('pointermove', onPointerMove);
+
+// On Click Event
+function onClick(event) {
+  raycaster.setFromCamera(pointer, camera);
+  // Calculates intersections
+  const intersects = raycaster.intersectObjects(scene.children);
+
+  if (intersects.length > 0) {
+    const hit = intersects[0].object;
+    if (hit.isMesh && hit.userData.type == "planet") {
+      console.log(hit)
+    }
+    
+  }
+}
+window.addEventListener('mouseup', onClick);
+
+
 
 // Initilize controls with Camera and Renderer
 const controls = new OrbitControls( camera, renderer.domElement );
