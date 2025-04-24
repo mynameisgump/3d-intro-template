@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { degToRad } from 'three/src/math/MathUtils';
+import { BloomEffect, ASCIIEffect, EffectComposer, EffectPass, RenderPass } from "postprocessing";
 
 
 // Create Texture Loader
@@ -15,7 +16,7 @@ function createRing(orbitRadius) {
 
 function createOrbitPath(orbitRadius) {
   const geometry = new THREE.TorusGeometry(orbitRadius,0.05,12,80);
-  const material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
+  const material = new THREE.MeshBasicMaterial( { color: "#b9b9b9", side: THREE.DoubleSide } );
   const mesh = new THREE.Mesh( geometry, material ); 
   return mesh;
 }
@@ -45,7 +46,7 @@ function createPlanet(size,texture, orbitRadius, parent) {
 }
 
 // Initializing the Renderer and setting to correct size
-const renderer = new THREE.WebGLRenderer({antialias: true});
+const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -62,6 +63,11 @@ const camera = new THREE.PerspectiveCamera(
 );
 // Move camera position back to see
 camera.position.z = 30;
+
+// Postprocessing Effects
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new EffectPass(camera, new BloomEffect()));
 
 // Initialize a raycaster
 const raycaster = new THREE.Raycaster();
@@ -108,7 +114,7 @@ window.addEventListener('resize', () => {
 // Creating the Sun and adding to the scene
 const sunGeo = new THREE.SphereGeometry(5);
 const sunTex = textureLoader.load("/textures/sun_diffuse.jpg")
-const sunMat = new THREE.MeshBasicMaterial({ map: sunTex });
+const sunMat = new THREE.MeshStandardMaterial({ emissiveMap: sunTex, emissive: "#ffa400", emissiveIntensity: 4, });
 const sun = new THREE.Mesh(sunGeo,sunMat);
 scene.add(sun)
 
@@ -137,7 +143,8 @@ scene.add(stars)
 // Code For the Animation Loop
 function animate() {
   renderer.render(scene, camera);
-  
+  composer.render();
+
   // Planet and sun rotations
   sun.rotation.y += 0.01
 
