@@ -1,6 +1,24 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { degToRad } from 'three/src/math/MathUtils';
+import sunVertex from './shaders/sunVert.glsl?raw';
+import sunFragment from './shaders/sunFrag.glsl?raw';
+import { DirectionalLight } from 'three';
+import { PointLight } from 'three';
+const sunMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    u_time: { value: 0 },
+    u_color: { value: new THREE.Color(1.0, 0.7, 0.3) },
+    u_cameraPosition: { value: new THREE.Vector3() },
+    modelMatrix: { value: new THREE.Matrix4() }
+  },
+  vertexShader: sunVertex,
+  fragmentShader: sunFragment,
+  transparent: false,
+  blending: THREE.AdditiveBlending
+});
+
+
 
 
 // Create Texture Loader
@@ -106,10 +124,10 @@ window.addEventListener('resize', () => {
 });
 
 // Creating the Sun and adding to the scene
-const sunGeo = new THREE.SphereGeometry(5);
+const sunGeo = new THREE.SphereGeometry(5,16,16);
 const sunTex = textureLoader.load("/textures/sun_diffuse.jpg")
-const sunMat = new THREE.MeshBasicMaterial({ map: sunTex});
-const sun = new THREE.Mesh(sunGeo,sunMat);
+// const sunMat = new THREE.MeshBasicMaterial({ map: sunTex});
+const sun = new THREE.Mesh(sunGeo,sunMaterial);
 scene.add(sun)
 
 // Create mercury and add to the sun, offset for rotation 
@@ -128,17 +146,28 @@ const starMat = new THREE.MeshBasicMaterial({ map: starTexture, side: THREE.Back
 const stars = new THREE.Mesh(starGeo,starMat);
 scene.add(stars)
 
+const light = new PointLight({intensity: 10000});
 // Code For the Animation Loop
 function animate() {
   renderer.render(scene, camera);
   
   // Planet and sun rotations
-  sun.rotation.y += 0.01
+  sun.rotation.y += 0.001
 
   mercOrbit.rotation.y += 0.01
   merc.rotation.y += 0.01
 
-  // venusOrbit.rotation.y += 0.012;
-  // venus.rotation.y +=0.02
+  venusOrbit.rotation.y += 0.012;
+  venus.rotation.y +=0.02
+
+  // Update the time uniform
+  sunMaterial.uniforms.u_time.value = performance.now() / 1000;
+ 
+  // Update camera position for view-dependent effects
+  sunMaterial.uniforms.u_cameraPosition.value.copy(camera.position);
+    
+  // Update model matrix to match the object's current transform
+  sun.updateMatrix();
+  sunMaterial.uniforms.modelMatrix.value.copy(sun.matrix);
 }
 renderer.setAnimationLoop(animate);
