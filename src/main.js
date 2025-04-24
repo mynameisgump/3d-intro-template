@@ -5,12 +5,20 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const textureLoader = new THREE.TextureLoader();
 
 // function to create planet 
-function createPlanet(size,texture) {
+function createPlanet(size,texture, orbitRadius, parent) {
+  // Add orbit center to the planet
+  const orbitCenter = new THREE.Group(); 
+  parent.add(orbitCenter);
+
+  // intitalize and add planet to orbit
   const planetGeo = new THREE.SphereGeometry(size);
   const planetTex = textureLoader.load(texture);
   const planetMat = new THREE.MeshBasicMaterial({map: planetTex});
   const planet = new THREE.Mesh(planetGeo,planetMat);
-  return planet
+  orbitCenter.add(planet);
+  planet.position.x = orbitRadius;
+  
+  return [orbitCenter,planet]
 }
 
 // Initializing the Renderer and setting to correct size
@@ -50,15 +58,12 @@ const sun = new THREE.Mesh(sunGeo,sunMat);
 scene.add(sun)
 
 // Create mercury and add to the sun, offset for rotation 
-const merc = createPlanet(1,"/textures/mercury_diffuse.jpg")
-sun.add(merc)
-merc.position.x = 8
+const [mercOrbit, merc] = createPlanet(3,"/textures/mercury_diffuse.jpg",25,sun)
+const [mercMoonOrbit,mercMoon] = createPlanet(2,"/textures/moon_diffuse.jpg",8,merc)
+
 
 // Create Venus and add to sun, offset for rotation
-// Need to seperate the orbits somehow 
-const venus = createPlanet(2,"/textures/venus_diffuse.jpg")
-sun.add(venus);
-venus.position.x = 20
+const [venusOrbit,venus] = createPlanet(2,"/textures/venus_diffuse.jpg",40,sun)
 
 // Create large geo skybox
 const starGeo = new THREE.SphereGeometry(4000);
@@ -74,6 +79,12 @@ function animate() {
   
   // Planet and sun rotations
   sun.rotation.y += 0.01
+
+  mercOrbit.rotation.y += 0.01
   merc.rotation.y += 0.01
+
+  // venusOrbit.rotation.y += 0.012;
+  // venus.rotation.y +=0.02
 }
 renderer.setAnimationLoop(animate);
+
