@@ -4,6 +4,15 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // Create Texture Loader
 const textureLoader = new THREE.TextureLoader();
 
+// function to create planet 
+function createPlanet(size,texture) {
+  const planetGeo = new THREE.SphereGeometry(size);
+  const planetTex = textureLoader.load(texture);
+  const planetMat = new THREE.MeshBasicMaterial({map: planetTex});
+  const planet = new THREE.Mesh(planetGeo,planetMat);
+  return planet
+}
+
 // Initializing the Renderer and setting to correct size
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -36,17 +45,20 @@ window.addEventListener('resize', () => {
 // Creating the Sun and adding to the scene
 const sunGeo = new THREE.SphereGeometry(5);
 const sunTex = textureLoader.load("/textures/sun_diffuse.jpg")
-const sunMat = new THREE.MeshBasicMaterial({color: "Orange", map: sunTex});
+const sunMat = new THREE.MeshBasicMaterial({ map: sunTex});
 const sun = new THREE.Mesh(sunGeo,sunMat);
 scene.add(sun)
 
 // Create mercury and add to the sun, offset for rotation 
-const mercGeo = new THREE.SphereGeometry(1);
-const mercTex = textureLoader.load("/textures/mercury_diffuse.jpg");
-const mercMat = new THREE.MeshBasicMaterial({map: mercTex});
-const merc = new THREE.Mesh(mercGeo,mercMat);
+const merc = createPlanet(1,"/textures/mercury_diffuse.jpg")
 sun.add(merc)
 merc.position.x = 8
+
+// Create Venus and add to sun, offset for rotation
+// Need to seperate the orbits somehow 
+const venus = createPlanet(2,"/textures/venus_diffuse.jpg")
+sun.add(venus);
+venus.position.x = 20
 
 // Create large geo skybox
 const starGeo = new THREE.SphereGeometry(4000);
