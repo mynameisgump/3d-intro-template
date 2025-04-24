@@ -1,15 +1,28 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { degToRad } from 'three/src/math/MathUtils';
+
 
 // Create Texture Loader
 const textureLoader = new THREE.TextureLoader();
+
+function createRing(orbitRadius) {
+  const geometry = new THREE.RingGeometry( orbitRadius-0.1, orbitRadius, 32 ); 
+  const material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
+  const mesh = new THREE.Mesh( geometry, material ); 
+  return mesh;
+}
 
 // function to create planet 
 function createPlanet(size,texture, orbitRadius, parent) {
   // Add orbit center to the planet
   const orbitCenter = new THREE.Group(); 
   parent.add(orbitCenter);
-
+  const tempVec = new THREE.Vector3();
+  orbitCenter.getWorldPosition(tempVec);
+  const ring = createRing(orbitRadius);
+  ring.rotateX(degToRad(90))
+  orbitCenter.add(ring)
   // intitalize and add planet to orbit
   const planetGeo = new THREE.SphereGeometry(size);
   const planetTex = textureLoader.load(texture);
@@ -87,4 +100,3 @@ function animate() {
   // venus.rotation.y +=0.02
 }
 renderer.setAnimationLoop(animate);
-
