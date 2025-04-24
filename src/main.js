@@ -142,6 +142,10 @@ const starMat = new THREE.MeshBasicMaterial({ map: starTexture, side: THREE.Back
 const stars = new THREE.Mesh(starGeo,starMat);
 scene.add(stars)
 
+const ambientLight = new THREE.AmbientLight();
+ambientLight.intensity=0.1
+scene.add(ambientLight)
+
 // Code For the Animation Loop
 function animate() {
   renderer.render(scene, camera);
