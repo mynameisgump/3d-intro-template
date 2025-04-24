@@ -35,7 +35,7 @@ function createPlanet(size,texture, orbitRadius, parent) {
   // intitalize and add planet to orbit
   const planetGeo = new THREE.SphereGeometry(size);
   const planetTex = textureLoader.load(texture);
-  const planetMat = new THREE.MeshBasicMaterial({map: planetTex});
+  const planetMat = new THREE.MeshStandardMaterial({map: planetTex});
   const planet = new THREE.Mesh(planetGeo,planetMat);
   orbitCenter.add(planet);
   planet.position.x = orbitRadius;
@@ -108,9 +108,15 @@ window.addEventListener('resize', () => {
 // Creating the Sun and adding to the scene
 const sunGeo = new THREE.SphereGeometry(5);
 const sunTex = textureLoader.load("/textures/sun_diffuse.jpg")
-const sunMat = new THREE.MeshBasicMaterial({ map: sunTex});
+const sunMat = new THREE.MeshBasicMaterial({ map: sunTex });
 const sun = new THREE.Mesh(sunGeo,sunMat);
 scene.add(sun)
+
+
+// Create light and add to sun 
+const sunLight = new THREE.PointLight()
+sunLight.intensity = 1000;
+sun.add(sunLight)
 
 // Create mercury and add to the sun, offset for rotation 
 const [mercOrbit, merc] = createPlanet(3,"/textures/mercury_diffuse.jpg",25,sun)
