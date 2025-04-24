@@ -13,16 +13,25 @@ function createRing(orbitRadius) {
   return mesh;
 }
 
+function createOrbitPath(orbitRadius) {
+  const geometry = new THREE.TorusGeometry(orbitRadius,0.05,12,80);
+  const material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
+  const mesh = new THREE.Mesh( geometry, material ); 
+  return mesh;
+}
+
 // function to create planet 
 function createPlanet(size,texture, orbitRadius, parent) {
+
   // Add orbit center to the planet
   const orbitCenter = new THREE.Group(); 
   parent.add(orbitCenter);
   const tempVec = new THREE.Vector3();
   orbitCenter.getWorldPosition(tempVec);
-  const ring = createRing(orbitRadius);
+  const ring = createOrbitPath(orbitRadius);
   ring.rotateX(degToRad(90))
   orbitCenter.add(ring)
+
   // intitalize and add planet to orbit
   const planetGeo = new THREE.SphereGeometry(size);
   const planetTex = textureLoader.load(texture);
