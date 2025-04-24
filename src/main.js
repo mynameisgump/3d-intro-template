@@ -41,7 +41,8 @@ function createPlanet(size,texture, orbitRadius, parent) {
   orbitCenter.add(planet);
   planet.position.x = orbitRadius;
   planet.userData = {type: "planet"}
-  
+  planet.castShadow = true;
+  planet.receiveShadow = true;
   return [orbitCenter,planet]
 }
 
@@ -49,7 +50,7 @@ function createPlanet(size,texture, orbitRadius, parent) {
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
+renderer.shadowMap.enabled = true
 // Initialize Scene Creation
 const scene = new THREE.Scene();
 
@@ -121,6 +122,7 @@ scene.add(sun)
 
 // Create light and add to sun 
 const sunLight = new THREE.PointLight()
+sunLight.castShadow = true;
 sunLight.intensity = 1000;
 sun.add(sunLight)
 
