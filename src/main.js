@@ -22,7 +22,7 @@ function createPlanet(size,texture, orbitRadius, parent) {
 }
 
 // Initializing the Renderer and setting to correct size
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
